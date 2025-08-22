@@ -44,7 +44,7 @@ let public tblView (groups: SpriteGroup list) (getImageBase64: Sprite -> string 
     let attachGroupInfo (group: SpriteGroup) rows =
         let groupRow =
             td [
-                _rowspan (group.Sprites.Length.ToString())
+                _rowspan ((max 1 group.Sprites.Length).ToString())
             ] [
                 str $"{group.Name} ({group.Sprites.Length})"
             ]
