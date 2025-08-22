@@ -16,6 +16,7 @@ open LaTaleTools.WebApp.FileViews.LdtView
 open LaTaleTools.WebApp.FileViews.TblView
 open LaTaleTools.WebApp.Route
 open LaTaleTools.WebApp.Views
+open Microsoft.Extensions.Logging
 
 let normalisePath (path: string) =
     path.Substring(browseBasePath.Length)
@@ -39,6 +40,7 @@ let renderTblHandler (fullPath: string) (name: string) (path: string): HttpHandl
     let viewAction _name view: HttpHandler =
         fun next ctx ->
             let appState = ctx.GetService<AppState>()
+            let logger = ctx.GetService<ILogger<Sprite>>()
 
             let spriteGroups = readSpriteGroups path view
             let allSprites = Seq.collect _.Sprites spriteGroups
@@ -52,7 +54,12 @@ let renderTblHandler (fullPath: string) (name: string) (path: string): HttpHandl
                                 let! stream = openStreamInArchive ap appState
                                 let buffer = Array.zeroCreate(int(stream.Length))
                                 return task {
-                                    let! _ = stream.ReadAsync(Memory(buffer))
+                                    let! _ =
+                                        Logging.logged logger $"ReadInArchiveFile[{ap}]"
+                                            (
+                                                (fun () -> stream.ReadAsync(Memory(buffer))),
+                                                (fun _ -> {| FileLength = buffer.Length |})
+                                            )
                                     return (file, buffer)
                                 }
                             }
