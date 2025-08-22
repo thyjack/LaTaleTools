@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "LaTaleTools.Library", "LaTaleTools.Library\LaTaleTools.Library.fsproj", "{5C5D6FB9-C2C6-463E-A243-D85DC5648D2D}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "LaTaleTools.WebApp", "LaTaleTools.WebApp\LaTaleTools.WebApp.fsproj", "{43098165-F4BB-4084-9A41-36E6D0A7B416}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "LaTaleTools.UnitTests", "LaTaleTools.UnitTests\LaTaleTools.UnitTests.fsproj", "{5B4F3C41-5362-4CFA-991C-0689EEEEF702}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5C5D6FB9-C2C6-463E-A243-D85DC5648D2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C5D6FB9-C2C6-463E-A243-D85DC5648D2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C5D6FB9-C2C6-463E-A243-D85DC5648D2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C5D6FB9-C2C6-463E-A243-D85DC5648D2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43098165-F4BB-4084-9A41-36E6D0A7B416}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43098165-F4BB-4084-9A41-36E6D0A7B416}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43098165-F4BB-4084-9A41-36E6D0A7B416}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43098165-F4BB-4084-9A41-36E6D0A7B416}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B4F3C41-5362-4CFA-991C-0689EEEEF702}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B4F3C41-5362-4CFA-991C-0689EEEEF702}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B4F3C41-5362-4CFA-991C-0689EEEEF702}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B4F3C41-5362-4CFA-991C-0689EEEEF702}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

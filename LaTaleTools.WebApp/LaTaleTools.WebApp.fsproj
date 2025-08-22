@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+      <UserSecretsId>61eb63fb-8034-44df-a708-0c7647b8ebe2</UserSecretsId>
+  </PropertyGroup>
+
+    <ItemGroup>
+        <Compile Include="Logging.fs" />
+        <Compile Include="AppState.fs" />
+        <Compile Include="Route.fs" />
+        <Compile Include="Config.fs" />
+        <Compile Include="Views.fs" />
+        <Compile Include="FileViews\LdtView.fs" />
+        <Compile Include="FileViews\TblView.fs" />
+        <Compile Include="Handlers.fs" />
+        <Compile Include="Program.fs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\LaTaleTools.Library\LaTaleTools.Library.fsproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Giraffe" Version="7.0.2" />
+    </ItemGroup>
+
+</Project>
