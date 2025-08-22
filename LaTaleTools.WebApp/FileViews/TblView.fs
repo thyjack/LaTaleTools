@@ -1,10 +1,12 @@
 module LaTaleTools.WebApp.FileViews.TblView
 
+open System
 open System.Threading.Tasks
 open FSharpPlus
 open Giraffe.ViewEngine
 open LaTaleTools.Library.Spf
 open LaTaleTools.Library.Tbl
+open LaTaleTools.WebApp.Views
 
 let public tblView (groups: SpriteGroup list) (getImageBase64: Sprite -> string option Task): XmlNode list Task =
     let titleRow =
@@ -30,7 +32,7 @@ let public tblView (groups: SpriteGroup list) (getImageBase64: Sprite -> string 
                     [ img [ _src $"data:image/png;base64,{base64Img}" ] ]
 
             return [
-                td [] [ str ap ]
+                td [] (pathView true ap ap String.Empty)
                 td [] [ str (sprite.Unknown1.ToString()) ]
                 td [] [ str (sprite.UnknownVec1.ToString()) ]
                 td [] [ str (sprite.UnknownVec2.ToString()) ]

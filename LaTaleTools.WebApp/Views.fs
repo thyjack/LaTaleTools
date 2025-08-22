@@ -1,7 +1,6 @@
 module LaTaleTools.WebApp.Views
 
 open System
-open System.IO
 open Giraffe.ViewEngine
 open LaTaleTools.Library.Util
 open LaTaleTools.Library.VirtualFs
@@ -14,7 +13,7 @@ let pageHead (titleString: string) =
     ]
 
 let pathView (isFile: bool) label path extraInfo =
-    span [] [
+    [
         a [
             yield _href (pathToBrowseLink path)
             if isFile then
@@ -50,18 +49,18 @@ let public dirView (fullPath: string) (name: string) (path: string) (children: F
     let mapChild =
         function
         | FsNode (name, _) ->
-            li [] [ pathView true name
-                        (if isRoot then $"/{name}" else $"{fullPath}/{name}") ""
-                  ]
+            li []
+            <| pathView true name
+                   (if isRoot then $"/{name}" else $"{fullPath}/{name}") ""
         | FsDirNode (name, _, _) ->
-            li [] [ pathView false name
-                        (if isRoot then $"/{name}" else $"{fullPath}/{name}") ""
-                  ]
+            li []
+            <| pathView false name
+                   (if isRoot then $"/{name}" else $"{fullPath}/{name}") ""
 
     pageTemplate fullPath name path
     <| [ ul []
          <| [
-                 if not isRoot then yield li [] [ pathView false ".." path path ]
+                 if not isRoot then yield li [] (pathView false ".." path path)
                  yield! children |> List.map mapChild
          ]
        ]
