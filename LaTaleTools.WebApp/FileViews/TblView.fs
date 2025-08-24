@@ -50,7 +50,9 @@ let public tblView (groups: SpriteGroup list) (getImageBase64: Sprite -> string 
             ]
         match rows with
         | head :: tail -> ((groupRow :: head) :: tail)
-        | _ -> [ groupRow :: List.replicate 7 (td [] []) ]
+        | _ -> [ groupRow
+                 :: List.singleton (td [ _colspan "7" ] [ i [] [ str "<empty>" ] ])
+               ]
     let sprites =
         [
             for group in groups ->
