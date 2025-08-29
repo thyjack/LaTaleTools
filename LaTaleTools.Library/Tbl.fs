@@ -40,7 +40,7 @@ let public readSpriteStream (sprite: Sprite) (baseFile: byte ReadOnlySpan) : byt
     use imageData = outputImage.Encode(SKEncodedImageFormat.Png, 100)
     imageData.ToArray()
 
-let public readSpriteGroups (pathToTbl: string) (view: UnmanagedMemoryAccessor): SpriteGroup list =
+let public readSpriteGroups (tblBaseDirPath: string) (view: UnmanagedMemoryAccessor): SpriteGroup list =
     let groupCount = view.ReadInt32 4L
 
     let readSprites pos count =
@@ -53,7 +53,7 @@ let public readSpriteGroups (pathToTbl: string) (view: UnmanagedMemoryAccessor):
               PosBottomRight = view.ReadVec2<int32> (pos + spriteSize * n + 28L)
               File =
                   let file = view.ReadNullTerminatedString (pos + spriteSize * n + 36L) 128 Encoding.ASCII
-                  ArchivePath.Join(pathToTbl, String.toUpper file)
+                  ArchivePath.Join(tblBaseDirPath, String.toUpper file)
             }
         let sprites =
             [ 0L .. count - 1L ]
