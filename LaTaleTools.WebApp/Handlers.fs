@@ -12,11 +12,13 @@ open LaTaleTools.Library.Tbl
 open LaTaleTools.Library.Util
 open LaTaleTools.Library.VirtualFs
 open LaTaleTools.WebApp.AppState
+open LaTaleTools.WebApp.FileViews.AudioView
 open LaTaleTools.WebApp.FileViews.LdtView
 open LaTaleTools.WebApp.FileViews.TblView
 open LaTaleTools.WebApp.Route
 open LaTaleTools.WebApp.Views
 open Microsoft.Extensions.Logging
+open TagLib
 
 let normalisePath (path: string) =
     path.Substring(browseBasePath.Length)
@@ -84,18 +86,27 @@ let renderTblHandler (fullPath: string) (name: string) (path: string): HttpHandl
             task {
                 let! subView = tblView spriteGroups getCroppedImageBase64
                 return!
-                    ( fileView fullPath name path (Some subView)
+                    ( fileView fullPath name path subView
                       |> htmlView
                     ) next ctx
             }
     genericFileHandler openViewInArchive viewAction
+
+type InMemoryTagLibFile(name: string, stream: Stream) =
+    interface File.IFileAbstraction with
+        member this.Name = name
+        member this.ReadStream = stream
+        member this.WriteStream = null
+        member this.CloseStream(streamToClose: Stream) =
+            if streamToClose <> null then
+                streamToClose.Dispose()
 
 let renderHandler (fullPath: string) fsNode: HttpHandler =
     match fsNode with
     | FsNode (name, path) when suffixMatchCi name ".ldt" ->
         let viewAction _name view =
             let ldtTable = readLdtTable view
-            htmlView (fileView fullPath name path (Some <| ldtView ldtTable))
+            htmlView (fileView fullPath name path (ldtView ldtTable))
         genericFileHandler openViewInArchive viewAction
     | FsNode (name, path) when suffixMatchCi name ".tbl" ->
         renderTblHandler fullPath name path
@@ -111,12 +122,25 @@ let renderHandler (fullPath: string) fsNode: HttpHandler =
                         |> String.trimStart ['\uFEFF'; '\u200B']
                     return!
                        ( htmlView
-                         <| fileView fullPath name path (Some (codeViewComponent dataString))
+                         <| fileView fullPath name path (codeViewComponent dataString)
                        ) next ctx
                 }
         genericFileHandler openStreamInArchive viewAction
+    | FsNode (name, path) when [ ".mp3"; ".wav" ] |> List.exists (suffixMatchCi name) ->
+        let viewAction name (stream: Stream) =
+            use tagLibFile = File.Create(InMemoryTagLibFile(name, stream))
+            
+            let description = tagLibFile.Properties.Description
+            let tags = tagLibFile.Tag
+            
+            let audioPlayerView = audioPlayerComponent fullPath description tags
+            htmlView (fileView fullPath name path audioPlayerView)
+        genericFileHandler openStreamInArchive viewAction
+    | FsNode (name, path) when suffixMatchCi name ".png" ->
+        let imageView = imageComponent fullPath name
+        htmlView (fileView fullPath name path imageView)
     | FsNode (name, path) ->
-        htmlView (fileView fullPath name path None)
+        htmlView (fileView fullPath name path [])
     | FsDirNode (name, path, children) ->
         htmlView (dirView fullPath name path children)
 

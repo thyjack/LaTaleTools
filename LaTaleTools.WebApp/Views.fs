@@ -65,33 +65,19 @@ let public dirView (fullPath: string) (name: string) (path: string) (children: F
          ]
        ]
 
-let maybeRenderImage fullPath name = [
-    if suffixMatchCi name ".png"
-    then yield img [ _src (pathToDownloadLink fullPath) ]
+let imageComponent fullPath name = [
+    img [ _src (pathToDownloadLink fullPath) ]
 ]
 
-let maybeRenderAudioPlayer fullPath name = [
-    if suffixMatchCi name ".mp3"
-       || suffixMatchCi name ".wav"
-    then yield audio [ _controls; _autoplay; _loop ] [
-        source [ _src (pathToDownloadLink fullPath) ]
-    ]
-]
-
-let renderContentNativeHtml fullPath name =
-    [ yield! maybeRenderImage fullPath name
-      yield! maybeRenderAudioPlayer fullPath name
-    ]
-
-let public codeViewComponent (content: string) =
+let public codeViewComponent (content: string) = [
     pre [] [ str content ]
-    |> List.singleton
+]
 
-let public fileView (fullPath: string) (name: string) (path: string) (view: XmlNode list option) =
+let public fileView (fullPath: string) (name: string) (path: string) (view: XmlNode list) =
     pageTemplate fullPath name path
     <| [ div [] [
              yield a [ _href (pathToDownloadLink fullPath) ] [ str "Download" ]
              yield br []
-             yield! view |> Option.defaultWith (fun () -> renderContentNativeHtml fullPath name)
+             yield! view
          ]
        ]
