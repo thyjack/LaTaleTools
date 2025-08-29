@@ -14,41 +14,41 @@ let private tagsToList (tags: Tag) =
         else list
     
     List.empty
-    |> addIfNotEmpty "Title" tags.Title
-    |> addIfNotEmpty "TitleSort" tags.TitleSort
-    |> addIfNotEmpty "JoinedPerformers" tags.JoinedPerformers
-    |> addIfNotEmpty "JoinedAlbumArtists" tags.JoinedAlbumArtists
-    |> addIfNotEmpty "Album" tags.Album
-    |> addIfNotEmpty "AlbumSort" tags.AlbumSort
-    |> addIfNotEmpty "Comment" tags.Comment
-    |> addIfNotEmpty "JoinedGenres" tags.JoinedGenres
-    |> addIfNotEmpty "Copyright" tags.Copyright
-    |> addIfNotEmpty "JoinedComposers" tags.JoinedComposers
-    |> addIfNotEmpty "Conductor" tags.Conductor
-    |> addIfNotEmpty "Grouping" tags.Grouping
-    |> addIfNotEmpty "Lyrics" tags.Lyrics
-    |> addIfNotEmpty "RemixedBy" tags.RemixedBy
-    |> addIfNotEmpty "Subtitle" tags.Subtitle
-    |> addIfNotEmpty "AmazonId" tags.AmazonId
-    |> addIfNotEmpty "InitialKey" tags.InitialKey
-    |> addIfNotEmpty "ISRC" tags.ISRC
-    |> addIfNotEmpty "MusicBrainzArtistId" tags.MusicBrainzArtistId
-    |> addIfNotEmpty "MusicBrainzDiscId" tags.MusicBrainzDiscId
-    |> addIfNotEmpty "MusicBrainzReleaseArtistId" tags.MusicBrainzReleaseArtistId
-    |> addIfNotEmpty "MusicBrainzReleaseCountry" tags.MusicBrainzReleaseCountry
-    |> addIfNotEmpty "MusicBrainzReleaseGroupId" tags.MusicBrainzReleaseGroupId
-    |> addIfNotEmpty "MusicBrainzReleaseId" tags.MusicBrainzReleaseId
-    |> addIfNotEmpty "MusicBrainzReleaseStatus" tags.MusicBrainzReleaseStatus
-    |> addIfNotEmpty "MusicBrainzReleaseType" tags.MusicBrainzReleaseType
-    |> addIfNotEmpty "MusicBrainzTrackId" tags.MusicBrainzTrackId
-    |> addIfNotEmpty "MusicIpId" tags.MusicIpId
-    |> addIfNotEmpty "TagTypes" (String.Join(", ", tags.TagTypes))
-    |> addIfPositive "Year" tags.Year
-    |> addIfPositive "Track" tags.Track
-    |> addIfPositive "TrackCount" tags.TrackCount
-    |> addIfPositive "Disc" tags.Disc
-    |> addIfPositive "DiscCount" tags.DiscCount
-    |> addIfPositive "BeatsPerMinute" tags.BeatsPerMinute
+    |> addIfNotEmpty (nameof tags.Title) tags.Title
+    |> addIfNotEmpty (nameof tags.TitleSort) tags.TitleSort
+    |> addIfNotEmpty (nameof tags.JoinedPerformers) tags.JoinedPerformers
+    |> addIfNotEmpty (nameof tags.JoinedAlbumArtists) tags.JoinedAlbumArtists
+    |> addIfNotEmpty (nameof tags.Album) tags.Album
+    |> addIfNotEmpty (nameof tags.AlbumSort) tags.AlbumSort
+    |> addIfNotEmpty (nameof tags.Comment) tags.Comment
+    |> addIfNotEmpty (nameof tags.JoinedGenres) tags.JoinedGenres
+    |> addIfNotEmpty (nameof tags.Copyright) tags.Copyright
+    |> addIfNotEmpty (nameof tags.JoinedComposers) tags.JoinedComposers
+    |> addIfNotEmpty (nameof tags.Conductor) tags.Conductor
+    |> addIfNotEmpty (nameof tags.Grouping) tags.Grouping
+    |> addIfNotEmpty (nameof tags.Lyrics) tags.Lyrics
+    |> addIfNotEmpty (nameof tags.RemixedBy) tags.RemixedBy
+    |> addIfNotEmpty (nameof tags.Subtitle) tags.Subtitle
+    |> addIfNotEmpty (nameof tags.AmazonId) tags.AmazonId
+    |> addIfNotEmpty (nameof tags.InitialKey) tags.InitialKey
+    |> addIfNotEmpty (nameof tags.ISRC) tags.ISRC
+    |> addIfNotEmpty (nameof tags.MusicBrainzArtistId) tags.MusicBrainzArtistId
+    |> addIfNotEmpty (nameof tags.MusicBrainzDiscId) tags.MusicBrainzDiscId
+    |> addIfNotEmpty (nameof tags.MusicBrainzReleaseArtistId) tags.MusicBrainzReleaseArtistId
+    |> addIfNotEmpty (nameof tags.MusicBrainzReleaseCountry) tags.MusicBrainzReleaseCountry
+    |> addIfNotEmpty (nameof tags.MusicBrainzReleaseGroupId) tags.MusicBrainzReleaseGroupId
+    |> addIfNotEmpty (nameof tags.MusicBrainzReleaseId) tags.MusicBrainzReleaseId
+    |> addIfNotEmpty (nameof tags.MusicBrainzReleaseStatus) tags.MusicBrainzReleaseStatus
+    |> addIfNotEmpty (nameof tags.MusicBrainzReleaseType) tags.MusicBrainzReleaseType
+    |> addIfNotEmpty (nameof tags.MusicBrainzTrackId) tags.MusicBrainzTrackId
+    |> addIfNotEmpty (nameof tags.MusicIpId) tags.MusicIpId
+    |> addIfNotEmpty (nameof tags.TagTypes) (String.Join(", ", tags.TagTypes))
+    |> addIfPositive (nameof tags.Year) tags.Year
+    |> addIfPositive (nameof tags.Track) tags.Track
+    |> addIfPositive (nameof tags.TrackCount) tags.TrackCount
+    |> addIfPositive (nameof tags.Disc) tags.Disc
+    |> addIfPositive (nameof tags.DiscCount) tags.DiscCount
+    |> addIfPositive (nameof tags.BeatsPerMinute) tags.BeatsPerMinute
     |> List.rev
 
 let audioPlayerComponent fullPath description (tags: Tag) = [
