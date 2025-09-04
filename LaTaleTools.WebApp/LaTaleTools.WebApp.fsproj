@@ -20,6 +20,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\LaTaleTools.Library\LaTaleTools.Library.fsproj" />
+      <ProjectReference Include="..\submodules\Giraffe.ViewEngine\src\Giraffe.ViewEngine\Giraffe.ViewEngine.fsproj" />
     </ItemGroup>
 
     <ItemGroup>

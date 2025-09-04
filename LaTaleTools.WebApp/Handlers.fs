@@ -5,6 +5,7 @@ open System.IO
 open System.Threading.Tasks
 open FSharpPlus
 open Giraffe
+open Giraffe.ViewEngine
 open LaTaleTools.Library.Encoding
 open LaTaleTools.Library.Ldt
 open LaTaleTools.Library.Spf
@@ -17,12 +18,22 @@ open LaTaleTools.WebApp.FileViews.LdtView
 open LaTaleTools.WebApp.FileViews.TblView
 open LaTaleTools.WebApp.Route
 open LaTaleTools.WebApp.Views
+open Microsoft.AspNetCore.Http
 open Microsoft.Extensions.Logging
 open TagLib
 
 let normalisePath (path: string) =
     path.Substring(browseBasePath.Length)
     |> trimPath
+
+let streamingHtmlView (node: XmlNode): HttpHandler =
+     fun (next: HttpFunc) (ctx: HttpContext) ->
+         ctx.SetContentType "text/html; charset=utf-8"
+         let pipeWriter = ctx.Response.BodyWriter
+         task {
+            do! AsyncViewWriter.writeHtmlAsync pipeWriter node
+            return Some ctx
+         }
 
 let genericFileHandler streamOrView handler: HttpHandler =
     fun next ctx ->
@@ -45,50 +56,48 @@ let renderTblHandler (fullPath: string) (name: string) (path: string): HttpHandl
 
             let spriteGroups = readSpriteGroups path view
             let allSprites = Seq.collect _.Sprites spriteGroups
-            let uniqueFileContents =
+            let fileContentMapping =
                 allSprites
-                |> Seq.distinctBy _.File
+                |> Seq.map _.File
+                |> Seq.distinct
                 |> Seq.map
                     (
-                        fun { File = ArchivePath ap as file } ->
+                        fun (ArchivePath ap as file) ->
                             monad' {
                                 let! stream = openStreamInArchive ap appState
                                 let buffer = Array.zeroCreate(int(stream.Length))
-                                return task {
-                                    let! _ =
-                                        Logging.logged logger $"ReadInArchiveFile[{ap}]"
-                                            (
-                                                (fun () -> stream.ReadAsync(Memory(buffer))),
-                                                (fun _ -> {| FileLength = buffer.Length |})
-                                            )
-                                    return (file, buffer)
-                                }
+                                let readTask =
+                                    task {
+                                        let! _ =
+                                            Logging.logged logger $"ReadInArchiveFile[{ap}]"
+                                                (
+                                                    (fun () -> stream.ReadAsync(Memory(buffer))),
+                                                    (fun _ -> {| FileLength = buffer.Length |})
+                                                )
+                                        return buffer
+                                    }
+                                return (file, readTask)
                             }
                     )
                 |> Seq.choose id
-                |> sequence
-                |> Task.map Map.ofSeq
+                |> Map.ofSeq
             let getCroppedImageBase64 (sprite: Sprite): string option Task =
-                let _getImageContent files =
+                let _imageContent: string Task option =
                     monad' {
-                        let! (file: byte array) = Map.tryFind sprite.File files
+                        let! (file: byte array Task) = Map.tryFind sprite.File fileContentMapping
 
                         return task {
-                            let byteArray = readSpriteStream sprite (ReadOnlySpan<byte>(file))
+                            let! fileContent = file
+                            let! byteArray =
+                                Task.Run(fun () -> readSpriteStream sprite (ReadOnlySpan<byte>(fileContent)))
                             return Convert.ToBase64String(ReadOnlySpan(byteArray))
                         }
-                    } |> sequence
-                uniqueFileContents
-                |> Task.map _getImageContent
-                |> join
+                    }
+                
+                sequence _imageContent
 
-            task {
-                let! subView = tblView spriteGroups getCroppedImageBase64
-                return!
-                    ( fileView fullPath name path subView
-                      |> htmlView
-                    ) next ctx
-            }
+            let subView = tblView spriteGroups getCroppedImageBase64
+            streamingHtmlView (fileView fullPath name path subView) next ctx
     genericFileHandler openViewInArchive viewAction
 
 type InMemoryTagLibFile(name: string, stream: Stream) =
@@ -115,7 +124,7 @@ let renderHandler (fullPath: string) fsNode: HttpHandler =
                 task {
                     let length = stream.Length
                     let data = Array.zeroCreate<byte>(int(length))
-                    do! stream.ReadAsync data |> map ignore
+                    let! _ = stream.ReadAsync data
                     let dataString =
                         xmlStringEncoding.GetString(ReadOnlySpan<byte>(data))
                         |> String.trimStart ['\uFEFF'; '\u200B']

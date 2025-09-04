@@ -8,7 +8,7 @@ open LaTaleTools.Library.Spf
 open LaTaleTools.Library.Tbl
 open LaTaleTools.WebApp.Views
 
-let public tblView (groups: SpriteGroup list) (getImageBase64: Sprite -> string option Task): XmlNode list Task =
+let public tblView (groups: SpriteGroup list) (getImageBase64: Sprite -> string option Task): XmlNode list =
     let titleRow =
         tr [] [
             th [] [ str "TBL Group Name" ]
@@ -22,7 +22,7 @@ let public tblView (groups: SpriteGroup list) (getImageBase64: Sprite -> string 
         ]
     let renderSpriteRow sprite =
         let (ArchivePath ap) = sprite.File
-        task {
+        let spritePreview = task {
             let! base64Img = getImageBase64 sprite
 
             let preview =
@@ -30,17 +30,18 @@ let public tblView (groups: SpriteGroup list) (getImageBase64: Sprite -> string 
                 | None -> []
                 | Some base64Img ->
                     [ img [ _src $"data:image/png;base64,{base64Img}" ] ]
-
-            return [
-                td [] (pathView true ap ap String.Empty)
-                td [] [ str (sprite.Unknown1.ToString()) ]
-                td [] [ str (sprite.UnknownVec1.ToString()) ]
-                td [] [ str (sprite.UnknownVec2.ToString()) ]
-                td [] [ str (sprite.PosTopLeft.ToString()) ]
-                td [] [ str ((sprite.PosBottomRight - sprite.PosTopLeft).ToString()) ]
-                td [] preview
-            ]
+            return td [] preview
         }
+        [
+            td [] (pathView true ap ap String.Empty)
+            td [] [ str (sprite.Unknown1.ToString()) ]
+            td [] [ str (sprite.UnknownVec1.ToString()) ]
+            td [] [ str (sprite.UnknownVec2.ToString()) ]
+            td [] [ str (sprite.PosTopLeft.ToString()) ]
+            td [] [ str ((sprite.PosBottomRight - sprite.PosTopLeft).ToString()) ]
+            asyncNode spritePreview
+        ]
+        
     let attachGroupInfo (group: SpriteGroup) rows =
         let groupRow =
             td [
@@ -57,14 +58,9 @@ let public tblView (groups: SpriteGroup list) (getImageBase64: Sprite -> string 
         [
             for group in groups ->
                 List.map renderSpriteRow group.Sprites
-                |> sequence
-                |> Task.map (attachGroupInfo group)
-                |> Task.map (List.map (tr []))
+                |> attachGroupInfo group
+                |> List.map (tr [])
         ]
-        |> sequence
 
-    task {
-        let! rows = sprites
-        let rows = List.collect id rows
-        return [ table [ _border "1" ] (titleRow :: rows) ]
-    }
+    let rows = List.collect id sprites
+    [ table [ _border "1" ] (titleRow :: rows) ]
