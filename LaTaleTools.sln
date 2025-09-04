@@ -6,6 +6,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "LaTaleTools.WebApp", "LaTal
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "LaTaleTools.UnitTests", "LaTaleTools.UnitTests\LaTaleTools.UnitTests.fsproj", "{5B4F3C41-5362-4CFA-991C-0689EEEEF702}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Giraffe.ViewEngine", "submodules\Giraffe.ViewEngine\src\Giraffe.ViewEngine\Giraffe.ViewEngine.fsproj", "{2CF4FAC5-FDFE-46F3-8BD5-3F643C8674FE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{5B4F3C41-5362-4CFA-991C-0689EEEEF702}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B4F3C41-5362-4CFA-991C-0689EEEEF702}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5B4F3C41-5362-4CFA-991C-0689EEEEF702}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CF4FAC5-FDFE-46F3-8BD5-3F643C8674FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CF4FAC5-FDFE-46F3-8BD5-3F643C8674FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CF4FAC5-FDFE-46F3-8BD5-3F643C8674FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CF4FAC5-FDFE-46F3-8BD5-3F643C8674FE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

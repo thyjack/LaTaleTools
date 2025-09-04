@@ -1,0 +1,3 @@
+[submodule "submodules/Giraffe.ViewEngine"]
+	path = submodules/Giraffe.ViewEngine
+	url = https://github.com/thyjack/Giraffe.ViewEngine
