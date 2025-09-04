@@ -22,8 +22,7 @@ open TagLib
 
 let normalisePath (path: string) =
     path.Substring(browseBasePath.Length)
-        .TrimStart('/')
-        .TrimEnd('/')
+    |> trimPath
 
 let genericFileHandler streamOrView handler: HttpHandler =
     fun next ctx ->
