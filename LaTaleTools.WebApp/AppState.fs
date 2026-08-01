@@ -77,9 +77,11 @@ let public buildAppState (logger: ILogger) (dirOrFilePath: string): AppState =
         else
             invalidArg (nameof dirOrFilePath) $"Invalid path: %s{dirOrFilePath}"
 
+    let actionLogger = Logging.prepareActionLogger logger
+    
     let readMetadataLogged path view =
-        Logging.logged logger $"ReadingSpf[{path}]"
-            <| ((fun () -> readMetadata view), (fun m -> {| FileCount = m.Length |}))
+        use _ = actionLogger $"ReadingSpf[{path}]"
+        readMetadata view
 
     let spfHandles =
         spfFiles |> List.map openSpf

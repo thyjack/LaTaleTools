@@ -1,18 +1,23 @@
 module LaTaleTools.WebApp.Logging
 
+open System
 open System.Diagnostics
+open System.Threading.Tasks
 open Microsoft.Extensions.Logging
 
-let public logged (logger: ILogger) (actionName: string) (action: unit -> 'a, additionalInfoOnComplete: 'a -> 'b): 'a =
-    logger.LogInformation("Starting action {action}", actionName)
-    let stopWatch = Stopwatch.StartNew()
-    let result = action()
-    stopWatch.Stop()
-    let additionalInfo = additionalInfoOnComplete result
-    logger.LogInformation(
-        "Finished action {action} (in {duration}) with additional info: {info}",
-        actionName,
-        stopWatch.Elapsed,
-        additionalInfo)
+[<Struct>]
+type private ActionLogger(logger: ILogger, actionName: string, startTimeTicks: int64) =
+    interface IAsyncDisposable with
+        member _.DisposeAsync() =
+            let elapsed = Stopwatch.GetElapsedTime(startTimeTicks)
+            logger.LogInformation("Completed {action} in {duration}", actionName, elapsed)
+            ValueTask.CompletedTask
 
-    result
+    interface IDisposable with
+        member _.Dispose() =
+            let elapsed = Stopwatch.GetElapsedTime(startTimeTicks)
+            logger.LogInformation("Completed {action} in {duration}", actionName, elapsed)
+
+let public prepareActionLogger (logger: ILogger) (actionName: string) : IDisposable =
+    let startTimeTicks = Stopwatch.GetTimestamp()
+    new ActionLogger(logger, actionName, startTimeTicks)

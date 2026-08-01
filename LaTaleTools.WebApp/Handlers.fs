@@ -53,6 +53,7 @@ let renderTblHandler (fullPath: string) (name: string) (path: string): HttpHandl
         fun next ctx ->
             let appState = ctx.GetService<AppState>()
             let logger = ctx.GetService<ILogger<Sprite>>()
+            let actionLogger = Logging.prepareActionLogger logger
 
             let spriteGroups = readSpriteGroups path view
             let allSprites = Seq.collect _.Sprites spriteGroups
@@ -68,12 +69,8 @@ let renderTblHandler (fullPath: string) (name: string) (path: string): HttpHandl
                                 let buffer = Array.zeroCreate(int(stream.Length))
                                 let readTask =
                                     task {
-                                        let! _ =
-                                            Logging.logged logger $"ReadInArchiveFile[{ap}]"
-                                                (
-                                                    (fun () -> stream.ReadAsync(Memory(buffer))),
-                                                    (fun _ -> {| FileLength = buffer.Length |})
-                                                )
+                                        use _ = actionLogger $"ReadingInArchiveFile[{ap}]"
+                                        let! _ = stream.ReadAsync(Memory(buffer))
                                         return buffer
                                     }
                                 return (file, readTask)
