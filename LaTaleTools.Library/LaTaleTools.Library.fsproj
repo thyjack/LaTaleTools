@@ -16,9 +16,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="FSharpPlus" Version="1.7.0" />
-      <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.8" />
-      <PackageReference Include="SkiaSharp" Version="3.119.0" />
+      <PackageReference Include="FSharpPlus" Version="1.9.1" />
+      <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.10" />
+      <PackageReference Include="SkiaSharp" Version="4.151.0" />
     </ItemGroup>
 
 </Project>
